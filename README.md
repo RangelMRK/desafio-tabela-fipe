@@ -19,24 +19,6 @@ Implementar uma aplicação que:
 
 - Consultar valores de veículos de maneira rápida e prática.
 
-## ⚙️ Como Executar o Projeto
-
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/seuusuario/desafio-tabela-fipe.git
-   ```
-
-2. Acesse o diretório do projeto:
-   ```bash
-   cd desafio-tabela-fipe
-   ```
-
-3. Compile e execute o projeto:
-   ```bash
-   javac Main.java
-   java Main
-   ```
-
 ## 🔗 Referências
 
 - [Tabela FIPE](https://veiculos.fipe.org.br/)
