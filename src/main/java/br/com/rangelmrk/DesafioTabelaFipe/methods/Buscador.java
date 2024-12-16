@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Buscador {
     private Scanner input = new Scanner(System.in);
@@ -43,25 +44,63 @@ public class Buscador {
 
 
 
-        List<CodigosMontadoras> montadoras = conversor.obterDados(jsonMontadoras, new TypeReference<List<CodigosMontadoras>>() {});
+        List<Dados> montadoras = conversor.obterDados(jsonMontadoras, new TypeReference<List<Dados>>() {});
 
-        for (CodigosMontadoras montadora : montadoras) {
+        for (Dados montadora : montadoras) {
             System.out.println("Código: " + montadora.codigo() + ", Nome: " + montadora.nome());
         }
 
         System.out.println("Digite o código da Montadora que deseja verificar o Modelo:");
         var inputMontadora = input.nextInt();
+        input.nextLine();
 
         endereco = "https://parallelum.com.br/fipe/api/v1/" + opcao +"/marcas/"+ inputMontadora +"/modelos";
         var jsonModelos = consumoApi.obterDados(endereco);
 
         RespostaModelos resposta = conversor.obterDados(jsonModelos, new TypeReference<RespostaModelos>() {});
 
-        List<ModelosMontadoras> modelos = resposta.getModelos();
+        List<Dados> modelos = resposta.getModelos();
 
-        for (ModelosMontadoras modelo : modelos) {
-            System.out.println("Código: " + modelo.codigo() + ", Modelo: " + modelo.modelo());
+        for (Dados modelo : modelos) {
+            System.out.println("Código: " + modelo.codigo() + ", Modelo: " + modelo.nome());
         }
+
+        System.out.println("\nDigite um trecho do nome do Modelo a ser buscado: ");
+        String nomeVeiculo = input.nextLine();
+
+        List<Dados> modelosFiltrados = modelos.stream()
+                .filter(m -> m.nome().toLowerCase().contains(nomeVeiculo.toLowerCase()))
+                .collect(Collectors.toList());
+
+        if (modelosFiltrados.isEmpty()) {
+            System.out.println("Nenhum modelo encontrado com o nome informado.");
+        } else {
+            System.out.println("Modelos encontrados:");
+            modelosFiltrados.forEach(modelo ->
+                    System.out.println("Código: " + modelo.codigo() + ", Nome: " + modelo.nome())
+            );
+        }
+
+        System.out.println("Digite o código do modelo para verificar os anos disponiveis");
+
+        var inputCodigo = input.nextInt();
+        input.nextLine();
+        endereco = "https://parallelum.com.br/fipe/api/v1/" + opcao +"/marcas/"+ inputMontadora +"/modelos/"+ inputCodigo +"/anos";
+        var jsonAnos = consumoApi.obterDados(endereco);
+
+        List<Dados> anos = conversor.obterDados(jsonAnos, new TypeReference<List<Dados>>() {});
+        List<DadosVeiculo> veiculos = new ArrayList<>();
+
+        for (int i = 0; i < anos.size(); i++){
+            var enderecoAnos = endereco + "/" + anos.get(i).codigo();
+            jsonAnos = consumoApi.obterDados(enderecoAnos);
+            DadosVeiculo veiculo = conversor.obterDados(jsonAnos, new TypeReference<DadosVeiculo>() {
+            });
+            veiculos.add(veiculo);
+        }
+
+        System.out.println("\n Veiculos filtrados avaliação/ano");
+        veiculos.forEach(System.out::println);
 
     }
 }

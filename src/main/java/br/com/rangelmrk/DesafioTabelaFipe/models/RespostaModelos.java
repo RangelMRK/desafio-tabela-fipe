@@ -3,15 +3,15 @@ package br.com.rangelmrk.DesafioTabelaFipe.models;
 import java.util.List;
 
 public class RespostaModelos {
-    private List<ModelosMontadoras> modelos;
-    private List<Object> anos; // Pode ser ajustado dependendo do que é necessário
+    private List<Dados> modelos;
+    private List<Object> anos;
 
 
-    public List<ModelosMontadoras> getModelos() {
+    public List<Dados> getModelos() {
         return modelos;
     }
 
-    public void setModelos(List<ModelosMontadoras> modelos) {
+    public void setModelos(List<Dados> modelos) {
         this.modelos = modelos;
     }
 
